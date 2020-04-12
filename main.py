@@ -1,8 +1,18 @@
 import os
 import ast
+import asyncio
+import time
 
 import discord
 from discord.ext import commands
+
+import logging
+
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 import math
 import random
@@ -19,11 +29,37 @@ client = commands.Bot(command_prefix = "t!")
 @client.event
 async def on_ready():
     print("Ready!")
+    print("Logged in as:", client.user.name, "(", client.user.id, ")")
+
+@client.event
+async def on_member_join(self, member):
+    ment = member.mention
+    await self.client.get_channel(697834161762861078).send(f"{ment} has joined the server.")
+    print(f"{member} has joined the server.")
+
+# cog shit
+@client.command()
+async def load(ctx, extension):
+    client.load_extension(f'cogs.{extension}')
+# more cog shit
+@client.command()
+async def unload(ctx, extension):
+    client.unload_extension(f'cogs.{extension}')
+
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        client.unload_extension(f'cogs.{filename[:-3]}')
+        client.load_extension(f'cogs.{filename[:-3]}')
 
 # purge
 @client.command()
 async def clear(ctx, amount=5):
     await ctx.channel.purge(limit=amount)
+
+@client.command()
+async def users(ctx):
+    id = client.get_guild(697834161255219230)
+    await ctx.send(f"""# of Members: {id.member_count}""")
 
 # say
 @client.command()
@@ -89,10 +125,6 @@ async def calc(cxt, n1, operator, n2=0):
         await cxt.send(math.sqrt(int(n1)))
 
 @client.command()
-async def kids(cxt):
-   await cxt.send("Aldioder kids guida pamparaqui \nyubeder ran deder ram \nautron may gon :gun: \naldioder kids guida pamparaqui \nyubeder ran deder ram \nfaster dan may ballet")
-
-@client.command()
 async def edned(cxt, one):
     if one == "1":
         homo = discord.Embed(title="AAAAAAAAAAAAAAA", type="rich", description="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", url="https://www.youtube.com/watch?v=dQw4w9WgXcQ")
@@ -101,5 +133,17 @@ async def edned(cxt, one):
     if one == "2":
         dieke = discord.Embed(title="AAAAAAAA", type="rich", description="heuj", url="https://www.youtube.com/watch?v=dQw4w9WgXcQ")
         await cxt.send(embed=dieke)
+
+@client.command()
+async def chc(cxt, *, name):
+    guild = cxt.message.guild
+    if ' ' in name:
+        name.replace(" ", "-")
+    await guild.create_text_channel(name)
+
+@client.command()
+async def chd(cxt, name):
+    guild = cxt.message.guild
+    await cxt.delete_channel(name)
 
 client.run(token)
