@@ -10,7 +10,7 @@ import logging
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename='./storage/discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
@@ -48,7 +48,6 @@ async def unload(ctx, extension):
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
-        client.unload_extension(f'cogs.{filename[:-3]}')
         client.load_extension(f'cogs.{filename[:-3]}')
 
 # purge
