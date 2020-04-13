@@ -6,7 +6,7 @@ class System(commands.Cog):
         self.client = client
 
     # Change status
-    @commands.command
+    @commands.command()
     async def status(self, ctx, status):
         if status == "online":
             await client.change_presence(status=discord.Status.online)
