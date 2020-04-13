@@ -1,18 +1,24 @@
-import discord
-from discord.ext import commands
+# Basic imports:
+# import discord
+# from discord.ext import commands
 
-class Example(commands.Cog):
+# Cog class:
+# class Example(commands.Cog):
 
-    def __init__(self, client):
-        self.client = client
+#     Forgot what this does, add it:
+#     def __init__(self, client):
+#         self.client = client
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('nigggEEEER')
+#     This is an event:
+#     @commands.Cog.listener()
+#     async def on_ready(self):
+#         print('This will be printed to the console.')
 
-    @commands.command()
-    async def ping(self, ctx):
-        await ctx.send("pong nigga")
+#     This is a command:
+#     @commands.command()
+#     async def ping(self, ctx):
+#         await ctx.send("pong nigga")
 
-def setup(client):
-    client.add_cog(Example(client))
+# This always needs to be at the end of a cog file:
+# def setup(client):
+#     client.add_cog(Example(client))
