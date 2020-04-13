@@ -46,7 +46,7 @@ class Utility(commands.Cog):
         await ctx.send(f"""# of Members: {id.member_count}""")
 
     @commands.command()
-    async def clear(self, ctx, amount=5):
+    async def clear(self, ctx, amount : int):
         await ctx.channel.purge(limit=amount)
 
     @commands.command()

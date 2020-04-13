@@ -65,6 +65,14 @@ async def on_guild_remove(guild):
     with open('./storage/prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
 
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('Please pass in all required arguments.')
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send('This command does not exist. Use `.help` to view all available commands.')
+    
+
 @client.command()
 async def cprefix(ctx, prefix):
     with open('./storage/prefixes.json', 'r') as f:
