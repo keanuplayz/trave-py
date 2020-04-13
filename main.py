@@ -19,6 +19,7 @@ logger.addHandler(handler)
 # Command-required packages
 import math
 import random
+import json
 
 # Dotenv
 import dotenv
@@ -26,7 +27,17 @@ from dotenv import load_dotenv
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 
-client = commands.Bot(command_prefix = "t!")
+def get_prefix(client, message):
+    with open('./storage/prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    
+    return prefixes[str(message.guild.id)]
+
+client = commands.Bot(command_prefix = get_prefix)
+
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        client.load_extension(f'cogs.{filename[:-3]}')
 
 # on_ready event
 @client.event
@@ -35,13 +46,41 @@ async def on_ready():
     print("Logged in as:", client.user.name, "(", client.user.id, ")")
 
 @client.event
+async def on_guild_join(guild):
+    with open('./storage/prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    
+    prefixes[str(guild.id)] = 't!'
+
+    with open('./storage/prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+@client.event
+async def on_guild_remove(guild):
+    with open('./storage/prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    
+    prefixes.pop(str(guild.id))
+
+    with open('./storage/prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+@client.command()
+async def cprefix(ctx, prefix):
+    with open('./storage/prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    
+    prefixes[str(ctx.guild.id)] = prefix
+
+    with open('./storage/prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+    await ctx.send(f'Prefix changed to: {prefix}')
+
+@client.event
 async def on_member_join(self, member):
     ment = member.mention
     await self.client.get_channel(697834161762861078).send(f"{ment} has joined the server.")
     print(f"{member} has joined the server.")
-
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        client.load_extension(f'cogs.{filename[:-3]}')
 
 client.run(token)
