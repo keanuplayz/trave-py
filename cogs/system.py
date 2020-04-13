@@ -22,11 +22,11 @@ class System(commands.Cog):
             ctx.send("Status changed to invisible.")
 
     # cog shit
-    @client.command()
+    @commands.command()
     async def load(self, ctx, extension):
         client.load_extension(f'cogs.{extension}')
     # more cog shit
-    @client.command()
+    @commands.command()
     async def unload(self, ctx, extension):
         client.unload_extension(f'cogs.{extension}')
 
