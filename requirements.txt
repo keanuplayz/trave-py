@@ -11,3 +11,4 @@ requests==2.12.4
 strawpy==1.1
 websockets==8.1
 yarl==1.4.2
+psutil==5.7.0
