@@ -4,6 +4,12 @@ import ast
 import asyncio
 import time
 
+# Uptime command
+import psutil
+pid = psutil.Process(os.getpid())
+pid.create_time()
+uptime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(pid.create_time()))
+
 # Discord
 import discord
 from discord.ext import commands
@@ -84,6 +90,10 @@ async def cprefix(ctx, prefix):
         json.dump(prefixes, f, indent=4)
 
     await ctx.send(f'Prefix changed to: {prefix}')
+
+@client.command()
+async def uptime(ctx):
+    await ctx.send(uptime)
 
 @client.event
 async def on_member_join(self, member):
